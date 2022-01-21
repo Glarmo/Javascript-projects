@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clock</title>
+</head>
+<body>
+
+    <div class="clock">
+        <div class="clock-face">
+          <div class="hand hour-hand"></div>
+          <div class="hand min-hand"></div>
+          <div class="hand second-hand"></div>
+        </div>
+      </div>
+      <div class="digital">
+        <div class="time"></div>
+        <div class="date-time"></div>
+      </div>
+      <style>
+        html {
+          background:ivory;
+          background-size: cover;
+          font-family: 'helvetica neue';
+          text-align: center;
+          font-size: 10px;
+        }
+    
+        body {
+          margin: 0;
+          font-size: 2rem;
+          display: flex;
+          flex: 1;
+          min-height: 100vh;
+        }
+    
+        .clock {
+          width: 30rem;
+          height: 30rem;
+          border: 10px solid black;
+          border-radius: 50%;
+          margin: 50px auto;
+          position: relative;
+          padding: 2rem;
+        }
+
+        .digital{
+            width: 60%;
+            height: 100px;
+            display: flex;
+            font-family: sans-serif;
+        }
+    
+        .clock-face {
+          position: relative;
+          width: 100%;
+          height: 100%;
+        }
+    
+        .hand {
+          width: 50%;
+          height: 6px;
+          background: black;
+          position: absolute;
+          transform-origin: 100%;
+          transform: rotate(90deg);
+          transition: all 0.05s;
+          transition-timing-function: ease-in-out;
+          top: 50%;
+        }
+
+        .time {
+            font-size: 80px;
+            font-weight: bold;
+            color: rgb(0, 0, 0);
+        }
+
+        .date-time {
+            font-size: 20px;
+            color: rgb(0, 0, 0);
+        }
+
+    
+      </style>
+      <script>
+        const secondHand = document.querySelector('.second-hand');
+        const minuteHand = document.querySelector('.min-hand');
+        const hourHand = document.querySelector('.hour-hand');
+
+        var time = document.querySelector('.time');
+        var dateTime = document.querySelector('.date-time');
+    
+        secondHand.style.height = "3px";
+        secondHand.style.background = "red";
+        hourHand.style.height = "9px";
+    
+        function setDate(){
+            const now = new Date();
+        
+            var seconds = now.getSeconds();
+            var minutes = now.getMinutes();
+            var hours = now.getHours();
+            var day = now.getDay();
+            var date = now.getDate();
+            var month = now.getMonth();
+            var year = now.getFullYear();
+
+            var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        
+            //get angles for clock hands
+            const secondsDegrees = ((seconds/60) * 360) + 90;
+            const minutesDegrees = ((minutes/60) * 360) + 90;
+            const hoursDegrees = ((hours/12) * 360) + 90;
+            //rotate hands
+            secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+            minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+            hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+          
+            //format digital time
+            var period = hours < 12 ? 'AM' : 'PM';
+
+            hours = hours % 12 || 12;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            date = date < 10 ? '0' + date : date;
+
+            time.innerHTML = hours + ':' + minutes + ':' + seconds + ' ' + period;
+            dateTime.innerHTML = dayNames[day] + ', ' + monthNames[month] + ' ' + date + ', ' + year;
+
+        }
+        setInterval(setDate, 1000);
+      </script>
+    </body>
+    </html>

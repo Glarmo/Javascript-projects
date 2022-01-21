@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Country Population</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="Country">
+    <ul class="suggestions">
+      <li>Filter for a country</li>
+    </ul>
+  </form>
+<style>
+    html {
+          background:ivory;
+          background-size: cover;
+          font-family: 'Times';
+          text-align: center;
+          font-size: 20px;
+        }
+</style>
+<script>
+    const endpoint='https://raw.githubusercontent.com/samayo/country-json/master/src/country-by-population.json'
+    const countries = []
+
+    const searchInput = document.querySelector('.search');
+    const suggestions = document.querySelector('.suggestions');
+
+    searchInput.addEventListener('change', displayMatches)
+    searchInput.addEventListener('keyup', displayMatches)
+
+    fetch(endpoint)
+        .then(dump => dump.json())
+        .then(data => countries.push(...data))
+    console.log(countries)
+
+    function findMatches(word, countries){
+        return countries.filter(place => {
+        const regex = new RegExp(word, 'gi'); //g = global i = case insensitive
+        return place.country.match(regex)
+    });
+    }
+
+    function displayMatches(){
+        const matchArray = findMatches(this.value, countries);
+        const html = matchArray.map(place => {      //for each place, do this ->
+            const regex = new RegExp(this.value, 'gi');
+            return `
+            <li>
+                <span class ="name">${place.country}</span>
+                <span class ="population">${numberWithCommas(place.population)}</span>
+            </li>
+            `;
+        }).join('');
+        suggestions.innerHTML = html;
+    }
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); 
+        // \B the chars are all together.
+        // ? optional match
+        // (\d{3})+ matches groups of 3 digits as many times as possible
+        //(?!\d) ensures there are no trailing digits   100,0 for example
+    }
+
+</script>

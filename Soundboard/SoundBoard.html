@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Soundboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<div class="keys">
+  <div data-key="65" class="key">
+    <kbd>A</kbd>
+    <span class="sound">Horn</span>
+  </div>
+  <div data-key="83" class="key">
+    <kbd>S</kbd>
+    <span class="sound">punch</span>
+  </div>
+  <div data-key="68" class="key">
+    <kbd>D</kbd>
+    <span class="sound">bark</span>
+  </div>
+  <div data-key="70" class="key">
+    <kbd>F</kbd>
+    <span class="sound">boo</span>
+  </div>
+  <div data-key="71" class="key">
+    <kbd>G</kbd>
+    <span class="sound">snow</span>
+  </div>
+  <div data-key="72" class="key">
+    <kbd>H</kbd>
+    <span class="sound">toaster</span>
+  </div>
+  <div data-key="74" class="key">
+    <kbd>J</kbd>
+    <span class="sound">gasp</span>
+  </div>
+  <div data-key="75" class="key">
+    <kbd>K</kbd>
+    <span class="sound">lock</span>
+  </div>
+  <div data-key="76" class="key">
+    <kbd>L</kbd>
+    <span class="sound">clap</span>
+  </div>
+</div>
+
+<audio data-key="65" src="sounds/horn.mp3"></audio>
+<audio data-key="83" src="sounds/punch-sound-effect.mp3"></audio>
+<audio data-key="68" src="sounds/large-dog-bark-once-sound-effect.mp3"></audio>
+<audio data-key="70" src="sounds/Boo-sound.mp3"></audio>
+<audio data-key="71" src="sounds/Walking Sound Effect Snow.mp3"></audio>
+<audio data-key="72" src="sounds/toaster-sound-effect.mp3"></audio>
+<audio data-key="74" src="sounds/male-gasp-sound-effect.mp3"></audio>
+<audio data-key="75" src="sounds/car-lock-sound-effect.mp3"></audio>
+<audio data-key="76" src="sounds/applause-sound-effect.mp3"></audio>
+
+
+<script>
+  function playSound(e){
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+    if(!audio) return; //stops function running for invalid keypress
+    audio.currentTime = 0;
+    audio.play()
+    key.classList.add('playing')
+  }
+
+  function removeTransition(e){
+    if (e.propertyName !== 'transform') return;
+    this.classList.remove('playing');
+  }
+
+  window.addEventListener('keydown', playSound)
+  const keys = document.querySelectorAll('.key');
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+</script>
