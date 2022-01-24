@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Books</title>
+</head>
+<body>
+  <img src="lib.jpg" style="float:right; vertical-align:top; border:5px solid black">
+  <div class="wrapper">
+    <h1>Books</h1>
+    <a href="../index.html">Return</a>
+    <ul class="plates" style="list-style-type: none;">
+      <li>No Books Saved</li>
+    </ul>
+    <form class="add-items" autocomplete="off">
+      <input type="text" name="label" placeholder="Title" required>
+      <input type="text" name="link" placeholder="Description">
+      <input type="submit" value="+ Add Item">
+    </form>
+  </div>
+
+  <style>
+    * {
+    font-family: Times, Arial,serif;
+    color: black;
+    background-color: AntiqueWhite;
+    }
+  
+  
+  h1 {
+    color: FireBrick;
+    background-image: url("");
+    background-size: contain;
+    width: 300px;
+    }
+  
+  p,
+  li {
+    font-size: 20px;
+  } 
+  
+  a {
+    text-decoration: underline dotted;
+    color: orchid;
+  }
+  
+  img {
+    max-width: 600px;
+    width: auto;
+    height: auto;
+    max-height: 700px;
+  }
+</style>
+
+<script>
+  const addItems = document.querySelector('.add-items');
+  const itemsList = document.querySelector('.plates');
+  const items = JSON.parse(localStorage.getItem('items')) || [];
+
+  addItems.addEventListener('submit', addItem)
+  
+  function addItem(e) {
+    e.preventDefault();
+    const link = (this.querySelector('[name=link]')).value
+    const label = (this.querySelector('[name=label]')).value
+    const item = {
+      label,
+      link,
+      done: false
+    }
+    items.push(item);
+    console.log(items)
+    populateList(items, itemsList)
+    localStorage.setItem('items', JSON.stringify(items))
+    this.reset();
+  }
+
+  function populateList(plates = [], platesList){
+    platesList.innerHTML = plates.map((plate, i) => {
+      var space = 350 - parseFloat((measureText('Times', plate.label).width).slice(0,-2))
+      return `
+        <li>
+          <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''}/>
+          <label for="item${i}">${plate.label}</label>
+          <span style="margin-left: ${space}px;"></span>
+          <button type="button" onClick="removeEntry(${i})" value="Remove">Remove</button>
+          <p style="font-size:14px">${plate.link}</p>
+        </li>
+      `
+    }).join('')
+  }
+
+  function measureText(font, txt) {
+
+    var el = document.createElement('div'),
+        cs, res;
+
+    el.style.cssText = 'position:fixed;left:-4000px;top:-4000px;padding:0;margin:0;font-size:20px;font:' + font;
+    el.innerHTML = txt;
+
+    document.body.appendChild(el);
+
+    cs = getComputedStyle(el);
+
+    res = {width: cs.getPropertyValue('width'),
+          height: cs.getPropertyValue('height')};
+
+    document.body.removeChild(el);
+
+    return res;    
+  }
+
+  function removeEntry(id){
+    removed = items.splice(id,1)
+    populateList(items, itemsList)
+    localStorage.setItem('items', JSON.stringify(items))
+  }
+
+  function toggleDone (e){
+    if(!e.target.matches('input')) return
+    const lel = e.target
+    const index = lel.dataset.index
+    items[index].done = !items[index].done
+    localStorage.setItem('items', JSON.stringify(items))
+    populateList(items, itemsList)
+  }
+
+  populateList(items, itemsList)
+  itemsList.addEventListener('click', toggleDone)
+</script>
+
+
+</body>
+</html>
+
